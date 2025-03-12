@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS IAM Implementation Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0066cc;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #333;
+        }
+        ul, ol {
+            padding-left: 25px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        strong {
+            font-weight: bold;
+        }
+        .contents {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .contents a {
+            text-decoration: none;
+            color: #0066cc;
+        }
+        .contents a:hover {
+            text-decoration: underline;
+        }
+        .arrow {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="contents">
+        <h1>Contents</h1>
+        <ul>
+            <li><a href="#aws-identity--access-management-iam-implementation-project">AWS Identity & Access Management (IAM) Implementation Project</a>
+                <ul>
+                    <li><a href="#project-overview">Project Overview</a></li>
+                    <li><a href="#business-context">Business Context</a></li>
+                    <li><a href="#implementation-details">Implementation Details</a>
+                        <ul>
+                            <li><a href="#1-iam-setup-and-user-management">1. IAM Setup and User Management</a></li>
+                            <li><a href="#2-policy-configuration-and-testing">2. Policy Configuration and Testing</a></li>
+                            <li><a href="#3-security-enhancements">3. Security Enhancements</a></li>
+                            <li><a href="#4-programmatic-access-configuration">4. Programmatic Access Configuration</a></li>
+                            <li><a href="#5-role-based-access-for-services">5. Role-Based Access for Services</a></li>
+                            <li><a href="#6-access-auditing-and-monitoring">6. Access Auditing and Monitoring</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#technical-skills-demonstrated">Technical Skills Demonstrated</a></li>
+                    <li><a href="#security-benefits-achieved">Security Benefits Achieved</a></li>
+                    <li><a href="#next-steps-and-recommendations">Next Steps and Recommendations</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h1 id="aws-identity--access-management-iam-implementation-project">AWS Identity & Access Management (IAM) Implementation Project</h1>
+
+    <h2 id="project-overview">Project Overview</h2>
+    <p>This project demonstrates implementation of AWS Identity and Access Management (IAM) best practices for secure cloud access control. The documentation outlines the complete setup and configuration of IAM users, groups, policies, roles, and security measures following AWS recommended practices.</p>
+
+    <h2 id="business-context">Business Context</h2>
+    <p>Organizations migrating to AWS need secure and well-managed access controls to protect cloud resources. This project addresses this need by establishing a robust identity management framework that:</p>
+    <ol>
+        <li>Follows the principle of least privilege</li>
+        <li>Implements multi-factor authentication</li>
+        <li>Separates root account from daily operations</li>
+        <li>Provides audit capabilities for access activities</li>
+        <li>Creates secure role-based access for services</li>
+    </ol>
+
+    <h2 id="implementation-details">Implementation Details</h2>
+
+    <h3 id="1-iam-setup-and-user-management">1. IAM Setup and User Management</h3>
+    <p>I first accessed the IAM console by searching "IAM" in the AWS search bar. An important observation at this stage was confirming that IAM is a global service, indicated by the disabled region selector in the console's top-right corner. This means IAM configurations apply across all AWS regions.</p>
+
+    <p><strong>Creating an Administrative User</strong><br>
+    To follow security best practices, I created an administrative user instead of using the root account:</p>
+    <ol>
+        <li>Navigated to Users → Create user</li>
+        <li>Named the user "deanmdt" and enabled management console access</li>
+        <li>Selected "Create IAM user" rather than Identity Center integration</li>
+        <li>Set a custom password and chose to not require password change at next sign-in</li>
+		<img src="images/IAM.png" alt="AWS-IAM Screenshot" width="400">
+    </ol>
+    
+    <p><strong>Group-Based Permission Management</strong><br>
+    To implement a scalable permission structure:</p>
+    <ol>
+        <li>Created an "admin" group with AdministratorAccess policy</li>
+        <li>Added the "deanmdt" user to this group</li>
+        <li>Added a tag to the user (Department: Engineering) to demonstrate resource metadata tagging</li>
+    </ol>
+    
+    <p>This approach demonstrates the preferred method of permission inheritance through groups rather than direct policy attachment, which simplifies access management as the organization grows.</p>
+
+    <h3 id="2-policy-configuration-and-testing">2. Policy Configuration and Testing</h3>
+    <p>To demonstrate policy implementation and validation:</p>
+    <ol>
+        <li>Removed the user from the admin group temporarily:</li>
+    </ol>
+    
+    <div class="arrow">
+        ||<br>
+        ||<br>
+        V
+    </div>
+    
+    <ol start="2">
+        <li>Verified that access was denied when attempting to list users</li>
+        <li>Attached the IAMReadOnlyAccess policy directly to the user</li>
+        <li>Verified that read operations succeeded but write operations (creating a group) failed</li>
+    </ol>
+    
+    <p>This test confirms that IAM policies properly restrict user actions based on assigned permissions.</p>
+
+    <p><strong>Policy Structure Analysis</strong><br>
+    I examined the JSON structure of different policies:</p>
+    <ol>
+        <li>AdministratorAccess: Contains "Action": "*" and "Resource": "*" to allow all actions on all resources</li>
+        <li>IAMReadOnlyAccess: Contains specific read actions like Get* and List* patterns to allow only viewing resources</li>
+    </ol>
+
+    <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:GenerateCredentialReport",
+                "iam:GenerateServiceLastAccessedDetails",
+                "iam:Get*",
+                "iam:List*",
+                "iam:SimulateCustomPolicy",
+                "iam:SimulatePrincipalPolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}</code></pre>
+
+    <p>I also demonstrated creating a custom policy with specific permissions (ListUsers and GetUser) using both the visual editor and JSON editor.</p>
+    
+    <h3 id="3-security-enhancements">3. Security Enhancements</h3>
+
+    <p><strong>Password Policy Implementation</strong><br>
+    I configured a custom password policy with the following settings:</p>
+    <ol>
+        <li>Minimum password length</li>
+        <li>Required character types (uppercase, lowercase, numbers, non-alphanumeric)</li>
+        <li>Password expiration period (90 days)</li>
+        <li>Prevention of password reuse</li>
+    </ol>
+
+    <p><strong>Multi-Factor Authentication (MFA)</strong><br>
+    I configured MFA for the root account by:</p>
+    <ol>
+        <li>Accessing Security Credentials from the account menu</li>
+        <li>Setting up MFA using an authenticator app (Google Authenticator)</li>
+        <li>Scanning the QR code and providing two consecutive authentication codes</li>
+        <li>Verifying the MFA setup through the login process</li>
+    </ol>
+    
+    <p>Logged out and then back in using my admin user credentials and MFA:</p>
+    
+    <p>This demonstrates implementation of AWS's strongest account protection recommendations.</p>
+
+    <h3 id="4-programmatic-access-configuration">4. Programmatic Access Configuration</h3>
+    <p>To enable automation and CLI access:</p>
+    <ol>
+        <li>Created access keys for the IAM user</li>
+        <li>Configured the AWS CLI using aws configure with the access key, secret key, and default region</li>
+        <li>Tested the configuration by running aws iam list-users</li>
+    </ol>
+    
+    <p>CloudShell:<br>
+    <ol start="4">
+        <li>Verified that permission changes affected CLI access the same way they affected console access</li>
+    </ol>
+
+    <p>This implementation allows for secure programmatic access to AWS resources through properly credentialed IAM identities.</p>
+
+    <h3 id="5-role-based-access-for-services">5. Role-Based Access for Services</h3>
+    <p>I created a service role to demonstrate how AWS services can securely access other services:</p>
+    <ol>
+        <li>Created a role for EC2 service</li>
+        <li>Attached the IAMReadOnlyAccess policy to this role</li>
+        <li>Verified the trust relationship configured to allow EC2 instances to assume this role</li>
+    </ol>
+    
+    <p>This implementation establishes a secure method for allowing AWS services to interact with each other without using long-term credentials.</p>
+
+    <h3 id="6-access-auditing-and-monitoring">6. Access Auditing and Monitoring</h3>
+
+    <p><strong>Credential Reports</strong><br>
+    I generated and analyzed a credential report that provided:</p>
+    <ol>
+        <li>Password and access key usage details</li>
+        <li>MFA status for all users</li>
+        <li>Password last used and rotation information</li>
+    </ol>
+    
+    <p><strong>Access Advisor</strong><br>
+    I used IAM Access Advisor to analyze service access patterns:</p>
+    <ol>
+        <li>Reviewed which services the IAM user had accessed</li>
+        <li>Identified the policies that granted this access</li>
+        <li>Noted unused service permissions that could be removed to follow least privilege</li>
+    </ol>
+
+    <p>This demonstrates implementation of AWS's auditing tools to maintain security compliance and optimize permissions.</p>
+
+    <h2 id="technical-skills-demonstrated">Technical Skills Demonstrated</h2>
+    <p>This project showcases competency in:</p>
+    <ol>
+        <li>AWS IAM architecture and implementation</li>
+        <li>Security best practices for cloud environments</li>
+        <li>Policy configuration and testing</li>
+        <li>Authentication enhancement (MFA)</li>
+        <li>CLI configuration and programmatic access</li>
+        <li>Role-based access control</li>
+        <li>Security auditing and monitoring</li>
+    </ol>
+
+    <h2 id="security-benefits-achieved">Security Benefits Achieved</h2>
+    <p>The implementation provides:</p>
+    <ol>
+        <li>Protection against root account compromise</li>
+        <li>Granular access control through custom policies</li>
+        <li>Streamlined permission management through groups</li>
+        <li>Enhanced authentication security with MFA</li>
+        <li>Secure service-to-service communication</li>
+        <li>Audit capabilities for compliance and security review</li>
+    </ol>
+
+    <h2 id="next-steps-and-recommendations">Next Steps and Recommendations</h2>
+    <p>For a production environment, I would recommend:</p>
+    <ol>
+        <li>Implementing a regular security review process using credential reports</li>
+        <li>Setting up CloudTrail for comprehensive activity logging</li>
+        <li>Creating additional role separation based on job functions</li>
+        <li>Establishing a formal process for access key rotation</li>
+        <li>Integrating with a corporate identity provider using IAM Identity Center</li>
+    </ol>
+
+    <p>This IAM implementation establishes a solid foundation for a secure AWS environment by ensuring proper identity management, access control, and security monitoring.</p>
+</body>
+</html>
