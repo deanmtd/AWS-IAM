@@ -3,6 +3,8 @@
 ## Project Overview
 This project demonstrates implementation of AWS Identity and Access Management (IAM) best practices for secure cloud access control. The documentation outlines the complete setup and configuration of IAM users, groups, policies, roles, and security measures following AWS recommended practices.
 
+## Screenshots and screengrabs
+* NB: All screenshots have been captured and imbedded within the IAM_ImplementationProject.docx document
 ## Business Context
 Organizations migrating to AWS need secure and well-managed access controls to protect cloud resources. This project addresses this need by establishing a robust identity management framework that:
 1.	Follows the principle of least privilege
