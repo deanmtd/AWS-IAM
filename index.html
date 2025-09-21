@@ -127,6 +127,7 @@
         <li>Created an "admin" group with AdministratorAccess policy</li>
         <li>Added the "deanmdt" user to this group</li>
         <li>Added a tag to the user (Department: Engineering) to demonstrate resource metadata tagging</li>
+		<img src="images/userGroupAdmin.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <p>This approach demonstrates the preferred method of permission inheritance through groups rather than direct policy attachment, which simplifies access management as the organization grows.</p>
@@ -135,6 +136,7 @@
     <p>To demonstrate policy implementation and validation:</p>
     <ol>
         <li>Removed the user from the admin group temporarily:</li>
+		<img src="images/adminAccess_Removed.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <div class="arrow">
@@ -145,8 +147,12 @@
     
     <ol start="2">
         <li>Verified that access was denied when attempting to list users</li>
+		<img src="images/userAdminPermRemoved.png" alt="AWS-IAM Screenshot" width="400">
         <li>Attached the IAMReadOnlyAccess policy directly to the user</li>
-        <li>Verified that read operations succeeded but write operations (creating a group) failed</li>
+        <li>Permissions were then restored</li>
+		<img src="images/adminPermRestored.png" alt="AWS-IAM Screenshot" width="400">
+		<li>Verified that read operations succeeded</li>
+		<img src="images/able2ListUsersAgain.png" alt="AWS-IAM Screenshot" width="400">		
     </ol>
     
     <p>This test confirms that IAM policies properly restrict user actions based on assigned permissions.</p>
@@ -196,6 +202,7 @@
         <li>Setting up MFA using an authenticator app (Google Authenticator)</li>
         <li>Scanning the QR code and providing two consecutive authentication codes</li>
         <li>Verifying the MFA setup through the login process</li>
+		<img src="images/mfaOnRoot.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <p>Logged out and then back in using my admin user credentials and MFA:</p>
@@ -208,6 +215,7 @@
         <li>Created access keys for the IAM user</li>
         <li>Configured the AWS CLI using aws configure with the access key, secret key, and default region</li>
         <li>Tested the configuration by running aws iam list-users</li>
+		<img src="images/awsWindowsCLI.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <p>CloudShell:<br>
@@ -223,6 +231,7 @@
         <li>Created a role for EC2 service</li>
         <li>Attached the IAMReadOnlyAccess policy to this role</li>
         <li>Verified the trust relationship configured to allow EC2 instances to assume this role</li>
+		<img src="images/IAM_ReadOnlyRole.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <p>This implementation establishes a secure method for allowing AWS services to interact with each other without using long-term credentials.</p>
@@ -235,6 +244,7 @@
         <li>Password and access key usage details</li>
         <li>MFA status for all users</li>
         <li>Password last used and rotation information</li>
+		<img src="images/iamCredentialReport.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
     
     <p><strong>Access Advisor</strong><br>
@@ -242,7 +252,9 @@
     <ol>
         <li>Reviewed which services the IAM user had accessed</li>
         <li>Identified the policies that granted this access</li>
+		<img src="images/accessAdvisor.png" alt="AWS-IAM Screenshot" width="400">
         <li>Noted unused service permissions that could be removed to follow least privilege</li>
+		<img src="images/servicesNotAccessed.png" alt="AWS-IAM Screenshot" width="400">
     </ol>
 
     <p>This demonstrates implementation of AWS's auditing tools to maintain security compliance and optimize permissions.</p>
